@@ -19,7 +19,7 @@ struct Timer {
 
 #[derive(Debug, Serialize)]
 struct QuoteResponse {
-    quote: String,
+    quote: &'static str,
 }
 
 #[derive(Debug, Serialize)]
@@ -47,7 +47,7 @@ async fn main() {
 
 async fn quote_handler() -> Json<QuoteResponse> {
     Json(QuoteResponse {
-        quote: String::from("You can do it!"),
+        quote: "You can do it!",
     })
 }
 
