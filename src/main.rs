@@ -17,6 +17,18 @@ struct Timer {
     end: DateTime<Utc>,
 }
 
+#[derive(Debug, Serialize)]
+struct QuoteResponse {
+    quote: String,
+}
+
+#[derive(Debug, Serialize)]
+struct StatusResponse {
+    seconds: i64,
+    minutes: i64,
+    hours: i64,
+}
+
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     let timers = Arc::new(Mutex::new(BTreeMap::<Uuid, Timer>::new()));
@@ -31,11 +43,6 @@ async fn main() {
     println!("Listening on {}", addr);
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
-}
-
-#[derive(Debug, Serialize)]
-struct QuoteResponse {
-    quote: String,
 }
 
 async fn quote_handler() -> Json<QuoteResponse> {
@@ -57,13 +64,6 @@ async fn timer_handler(
     timers.lock().await.insert(id, timer);
 
     Json(Timer { id, start, end })
-}
-
-#[derive(Debug, Serialize)]
-struct StatusResponse {
-    seconds: i64,
-    minutes: i64,
-    hours: i64,
 }
 
 async fn status_handler(
